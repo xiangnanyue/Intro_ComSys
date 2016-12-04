@@ -1,0 +1,82 @@
+mov 赋值指令
+
+add 加法指令， sub 减法指令， 
+
+ret 返回
+
+更多寄存器
+    eax, ebx, ecx, edx
+    esi
+    edi
+    ebp
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+汇编语言实验: 
+1 一个基本的程序
+GLOBAL _main 
+SECTION .text 
+_main: 
+mov eax, 
+42 ret
+
+执行:
+nasm -f macho tiny.asm
+gcc -m32 tiny.o -o tiny
+./tiny ; echo $?
+ 
+2 操作指令和数据指令的分离
+global _main
+
+_main:
+    mov eax, [number_1]
+    mov ebx, [number_2]
+    add eax, ebx
+    
+    ret
+
+section .data
+number_1      dw        10
+number_2      dw        20
+
+3 反汇编
+
+利用gdb进行反汇编
+gdb ./name 
+set disassembly-flavor intel
+disas main
+
+4 动态调试
+需要配置环境
+
+利用gcc gdb nasm 可以将c语言编译后程序和反汇编程序进行对比
+
+5 流程控制： jmp 指令(goto)
+x86 中执行位置的信息保存在eip寄存器中。但eip寄存器无通过mov指令进行修改
+eip对应程序中下一条指令的位置
+利用goto的语句形式，汇编可以写出比C更加灵活的代码形式。
+
+C 语言register关键字：用于限定一个变量只能用寄存器来表示
+
+用汇编语言写出while循环：在一个循环中定义一个跳出机制： goto end_of_block
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+Linux 系統下， 用于将c语言代码转换成汇编语言
+gcc -O1 -S code.c
+
+If you are using gcc, you can get the assembly as 
+gcc -S -o a.s a.c
+上述两个指令在mac下也可以使用，但是得到的汇编格式为bell 实验室格式
+
+linux gcc 常用指令得到intel格式：
+gcc -O1 -S -masm=intel code.c
+
+对于Mac
+clang++ -S -mllvm --x86-asm-syntax=intel code.c
+转成intel格式的汇编代码
+gdb模式下生成汇编格式文件类似，比较disas main命令和上述命令得到的汇编代码区别
+
+. The Intel code omits the size designation suffixes. We see instruction mov instead of movl.
+. The Intel code omits the ‘%’ character in front of register names, using esp instead of %esp.
+. The Intel code has a different way of describing locations in memory, for example ‘DWORD PTR [ebp+8]’ rather than ‘8(%ebp)’.
+. Instructions with multiple operands list them in the reverse order. This can be very confusing when switching between the two formats.
+
+＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+

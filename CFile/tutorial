@@ -1,0 +1,12 @@
+# to get the intel format from code.c file
+clang -O0 -mllvm --x86-asm-syntax=intel code.c -S
+
+# on Mac to get a 32bit system AMD format, change a little from the command on book
+gcc -m32 -O1 -S code.c
+# rather than 
+gcc -O1 -S code.c 
+# the difference include different name for push (pushl for x32 and pushq for x64)
+
+# http://www.cs.cmu.edu/~213/schedule.html
+# http://www.aqualab.cs.northwestern.edu/component/attachments/download/204
+
